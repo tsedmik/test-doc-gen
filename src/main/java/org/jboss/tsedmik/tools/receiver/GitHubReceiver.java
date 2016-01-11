@@ -44,27 +44,43 @@ import javax.json.JsonReader;
 public class GitHubReceiver implements Receiver {
 
 	private final static Logger log = Logger.getLogger(GitHubReceiver.class.getName());
-	private Map<String,String> meta = new HashMap<String, String>();
+	private Map<String, String> meta = new HashMap<String, String>();
 	private URL from;
 	private String to;
 
 	/**
 	 * Sets from where java classes will be fetched
 	 * 
-	 * @param from where are Java Classes stored. Use GitHub API - https://api.github.com/repos/${user}/${repository}/contents/${path-to-java-classes}
-	 * @throws IOException 
+	 * @param from
+	 *            where are Java Classes stored. Use GitHub API -
+	 *            https://api.github.com/repos/${user}/${repository}/contents/${path-to-java-classes}
+	 * @throws IOException
 	 */
-	public GitHubReceiver(URL from, String to) throws IOException {	
+	public GitHubReceiver(URL from, String to) throws IOException {
 		this.from = from;
 		this.to = to;
 		log.info("Setting URL to: " + from.toString());
 	}
 
+	/**
+	 * see {@link Receiver}
+	 */
 	public int receive() throws IOException {
 
 		return getFilesContent(getFolderContent());
 	}
 
+	/**
+	 * <p>see {@link Receiver}</p>
+	 * <p>Structure of stored meta data:
+	 * <ul>
+	 * <li>'index'_url - git_url to java class in Git Hub API format (for internal use)</li>
+	 * <li>'index'_path - name of Javaclass (e.g. String.java)</li>
+	 * <li>'name'_url - URL to Git Hub web page with Java class with the given name</li>
+	 * <li>'name'_size - size of java class with the given name</li>
+	 * </ul>
+	 * </p>
+	 */
 	public String getMeta(String key) {
 		return meta.get(key);
 	}
@@ -95,20 +111,21 @@ public class GitHubReceiver implements Receiver {
 	}
 
 	private int getFilesContent(int i) throws IOException {
-		
+
 		log.info("Saving files content ...");
 		for (int j = 1; j <= i; j++) {
 
 			log.info("Saving - " + meta.get(Integer.toString(j) + "_path"));
 			URL fileURL = new URL(meta.get(Integer.toString(j) + "_url"));
 			URLConnection conn = fileURL.openConnection();
-			conn.setRequestProperty("Accept", "application/vnd.github-blob.raw"); // set header to get raw content of the file
+			conn.setRequestProperty("Accept", "application/vnd.github-blob.raw"); // set header to get raw content of
+																					// the file
 			BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
 			// create 'target/resources' directory if needed
 			File dir = new File(to);
 			dir.mkdirs();
-			
+
 			File file = new File(dir.getAbsoluteFile() + "/" + meta.get(Integer.toString(j) + "_path"));
 			FileWriter fw = new FileWriter(file);
 			BufferedWriter bw = new BufferedWriter(fw);
@@ -120,7 +137,7 @@ public class GitHubReceiver implements Receiver {
 			bw.close();
 			fw.close();
 		}
-		
+
 		return i;
 	}
 }

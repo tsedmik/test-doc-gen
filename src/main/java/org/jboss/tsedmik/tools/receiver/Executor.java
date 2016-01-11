@@ -26,26 +26,32 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.util.logging.Logger;
 
 /**
- * TODO add JavaDoc
+ * Fetch Java classes (sources) from various external systems (e.g. GitHub) and do preprocessing (add meta data to
+ * JavaDoc).
  * 
  * @author tsedmik
  */
 public class Executor {
 
+	private final static Logger log = Logger.getLogger(Executor.class.getName());
+
 	/**
-	 * TODO add JavaDoc
-	 * TODO add Logging
+	 * Fetch sources from external systems and do preprocessing
 	 * 
 	 * @param args
+	 *            'github' - data will be fetched from Git Hub
 	 * @throws IOException
+	 *             something went wrong with IO operations (fatal error)
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException { // TODO improve error handling!
 
 		Receiver receiver = null;
 		switch (args[0]) { // in the future there might be more receivers (GitLab, SVN, ...)
 		case "github":
+			log.info("GitHub receiver will be used");
 			receiver = new GitHubReceiver(new URL(System.getProperty("github-api-resource")), System.getProperty("sourcePath"));
 			break;
 		default:
@@ -53,9 +59,11 @@ public class Executor {
 		}
 
 		// fetch java classes
+		log.info("Receiving data ...");
 		receiver.receive();
 
 		// add additional information from meta data
+		log.info("Adding additional information to sources ...");
 		File dir = new File(System.getProperty("sourcePath"));
 		String[] files = dir.list();
 		for (int i = 0; i < files.length; i++) {
@@ -69,8 +77,10 @@ public class Executor {
 			StringBuilder buffer = new StringBuilder();
 			boolean buffering = false;
 			while ((line = br.readLine()) != null) {
-				
-				if (line.contains("/**")) buffering = true; // start buffering JavaDoc comment
+
+				if (line.contains("/**"))
+					buffering = true; // start buffering JavaDoc comment
+
 				// stop buffering and process buffer
 				if ((line.contains("private") || line.contains("public")) && buffering) {
 
@@ -87,7 +97,7 @@ public class Executor {
 
 						buffer.insert(buffer.indexOf("/**") + 3, temp.toString());
 					}
-					
+
 					bw.append(buffer.toString()); // flush buffer to output
 					buffering = false;
 					buffer.delete(0, buffer.capacity()); // clear buffer

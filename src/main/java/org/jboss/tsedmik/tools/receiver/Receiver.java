@@ -22,8 +22,8 @@ package org.jboss.tsedmik.tools.receiver;
 import java.io.IOException;
 
 /**
- * Interface specifies methods which facilitate access to Java classes.
- * Found Java classes are stored in ${sourcePath} (defined in pom.xml).
+ * Interface specifies methods which facilitate access to Java classes. Found Java classes are stored in ${sourcePath}
+ * (defined in pom.xml).
  * 
  * @author tsedmik
  */
@@ -33,15 +33,16 @@ public interface Receiver {
 	 * Accesses and stores Java classes.
 	 * 
 	 * @return Number of stored classes
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	int receive() throws IOException;
 
 	/**
-	 * Accesses Meta information about stored Java classes (e.g. URL - where the test can be found).
-	 * TODO describe structure of Meta data map
+	 * Accesses Meta information about stored Java classes (e.g. URL - where the test can be found). The structure of
+	 * meta data is described in classes which implement this interface.
 	 * 
-	 * @param key Identifier
+	 * @param key
+	 *            Identifier
 	 * @return value associate with the given key, null - otherwise
 	 */
 	String getMeta(String key);
