@@ -74,17 +74,16 @@ public class Executor {
 				// stop buffering and process buffer
 				if ((line.contains("private") || line.contains("public")) && buffering) {
 
-					// add meta data
-					// skip classes
-					if (!line.contains("class")) {
+					// add meta data to classes
+					if (line.contains("class")) {
 
 						// add URL to source
 						StringBuilder temp = new StringBuilder();
-						temp.append("\n* <a href=\"");
+						temp.append("\n* <p><a href=\"");
 						temp.append(receiver.getMeta(files[i] + "_url"));
 						temp.append("\">");
 						temp.append(receiver.getMeta(files[i] + "_url"));
-						temp.append("</a>");
+						temp.append("</a></p>");
 
 						buffer.insert(buffer.indexOf("/**") + 3, temp.toString());
 					}
