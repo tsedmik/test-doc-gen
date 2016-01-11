@@ -23,7 +23,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.jboss.tsedmik.tools</groupId>
 	<artifactId>test-doc-gen</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>test-doc-gen</name>
 	<description>Converts JavaDoc to Documentation of tests in various data formats (HTML, XML, ...)</description>
 
@@ -116,7 +116,7 @@
 					<docletArtifact>
 						<groupId>org.jboss.tsedmik.tools</groupId>
 						<artifactId>test-doc-gen</artifactId>
-						<version>0.0.1</version>
+						<version>0.0.2-SNAPSHOT</version>
 					</docletArtifact>
 					<useStandardDocletOptions>false</useStandardDocletOptions>
 					<sourcepath>${sourcePath}</sourcepath>
